@@ -1,6 +1,5 @@
 from t1dsim_ai.individual.ForwardEulerSimulator import ForwardEulerSimulator
-from t1dsim_ai.individual.Q1_Ind import CGMIndividual
-from t1dsim_ai.individual.Q2_Ind import CGMIndividual_Q2
+from t1dsim_ai.individual.models import CGMIndividual
 from t1dsim_ai.utils.preprocess import scaler as scaler_pop
 from t1dsim_ai.utils.preprocess import scaler_inverse
 from t1dsim_ai.population.CGMOHSUSimStateSpaceModel_V2 import CGMOHSUSimStateSpaceModel_V2
@@ -21,24 +20,23 @@ from pickle import load
 import pandas as pd
 
 class DigitalTwin:
-    def __init__(self, n_digitalTwin=0, device=torch.device("cpu"), ts=5):
+    def __init__(self, n_digitalTwin=0, custom_DT = None, device=torch.device("cpu"), ts=5):
         self.ts = ts
         self.device = device
 
-        #Path(__file__).parent.parent / "models/IndividualModel/"
-        #Path(__file__).parent.parent.parent.parent / "RunExamples/example_model"
+        if custom_DT is None:
+            self.n_digitalTwin = n_digitalTwin
 
-        print(Path(__file__).parent.parent.parent.parent / "RunExamples/example_model")
-
-        self.n_digitalTwin = n_digitalTwin
-        
-        digitalTwin_list = [
-            f.path
-            for f in os.scandir(Path(__file__).parent.parent / "models/IndividualModel/")
-        ]
-        digitalTwin_list.sort()
-        print(digitalTwin_list)
-        self.digital_twin_folder = digitalTwin_list[self.n_digitalTwin]
+            digitalTwin_list = [
+                f.path
+                for f in os.scandir(Path(__file__).parent / "models/IndividualModel/")
+                if f.is_dir()
+            ]
+            digitalTwin_list.sort()
+            self.digital_twin_folder = digitalTwin_list[self.n_digitalTwin]
+        else:
+            self.n_digitalTwin = 99
+            self.digital_twin_folder  = custom_DT
 
         self.setup_simulator()
 
@@ -58,7 +56,7 @@ class DigitalTwin:
         ss_individual_model = CGMIndividual(hidden_compartments=hidden_compartments)
         #ss_individual_model = CGMIndividual_Q2(hidden_compartments=hidden_compartments)
         ss_individual_model.to(self.device)
-        print(self.digital_twin_folder + "/individual_model.pt")
+        #print(self.digital_twin_folder + "/individual_model.pt")
         ss_individual_model.load_state_dict(
             torch.load(self.digital_twin_folder + "/individual_model.pt")
         )

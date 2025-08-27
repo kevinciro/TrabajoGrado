@@ -13,9 +13,10 @@ from sklearn.metrics import mean_absolute_error, root_mean_squared_error, mean_a
 
 df_simulation = pd.read_csv("./data/data_example.csv")
 df_simulation = df_simulation[~df_simulation.is_train]
-myDigitalTwin = DigitalTwin(n_digitalTwin=0)
+myDigitalTwin = DigitalTwin(n_digitalTwin=0, custom_DT = "./example_model/DT_Example")
 df_simulation = myDigitalTwin.simulate(df_simulation.iloc[1 * 12 * 24 : 2 * 12 * 24])
 
+print(df_simulation.head())
 
 """ print("cgm_Actual")
 print("TIR: " + str(get_TIR(df_simulation["cgm_Actual"])))

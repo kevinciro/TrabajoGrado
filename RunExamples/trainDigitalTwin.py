@@ -196,19 +196,19 @@ if __name__ == "__main__":
     # Architecture individual models
     n_neurons = 128
     
-    #hidden_compartments = {
-    #    "models": [5 + len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
-    #} 
-
     hidden_compartments = {
-        "models": [5 + len(input_ind), 20, 30, 40, 50, 1]
-    }
+        "models": [5 + len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    } 
+
+    #hidden_compartments = {
+    #    "models": [5 + len(input_ind), 20, 30, 40, 50, 1]
+    #}
 
     lr = 10 ** (-4)
-    #batch_size = 32
-    batch_size = 16
-    #n_epochs = 150
-    n_epochs = 10
+    batch_size = 32
+    #batch_size = 16
+    n_epochs = 150
+    #n_epochs = 10
     seq_len = 60
     overlap = 0.9
     #overlap = 0.3

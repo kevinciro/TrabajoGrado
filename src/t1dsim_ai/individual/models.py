@@ -19,39 +19,39 @@ hidden_compartments_q1 = {
 }
 
 hidden_compartments_q2 = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [4+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 hidden_compartments_s1 = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [2+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 hidden_compartments_s2 = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [2+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 hidden_compartments_x1 = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [2+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 hidden_compartments_x2 = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [2+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 hidden_compartments_x3 = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [2+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 hidden_compartments_I = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [2+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 hidden_compartments_c1 = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [2+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 hidden_compartments_c2 = {
-    "models": [5+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
+    "models": [2+ len(input_ind), n_neurons, n_neurons // 2, n_neurons // 4, 1]
 }
 
 class CGMIndividual(nn.Module):
@@ -89,7 +89,7 @@ class CGMIndividual(nn.Module):
         # NN - Model I
         layers_model_I = []
         for i in range(len(hidden_compartments_I["models"]) - 2):
-            layers_model_X3.append(
+            layers_model_I.append(
                 nn.Linear(
                     hidden_compartments_I["models"][i],
                     hidden_compartments_I["models"][i + 1],
@@ -222,7 +222,7 @@ class CGMIndividual(nn.Module):
 
                 net.apply(clipper)
 
-    def forward(self, in_x, u_pop, u_ind, in_u):
+    def forward(self, in_x, u_pop, u_ind):
         # q1, q2, s1, s2, I, x1, x2, x3, c2, c1
         q1, q2, s1, s2, i, x1, x2, x3, c2, c1 = (
             in_x[..., [0]],
@@ -237,7 +237,7 @@ class CGMIndividual(nn.Module):
             in_x[..., [9]],
         )
 
-        u_I, u_carbs = in_u[..., [0]], in_u[..., 1:]
+        u_I, u_carbs = u_pop[..., [0]], u_pop[..., 1:]
 
         inp_S1 = torch.cat((s1, u_I, u_ind), -1)
         dS1_Ind = self.net_dS1(inp_S1)
@@ -263,12 +263,12 @@ class CGMIndividual(nn.Module):
         inp_Q2 = torch.cat((q1, q2, x1, x2, u_ind), -1)
         dQ2_Ind = self.net_dQ2(inp_Q2)
 
-        inp_C1 = torch.cat((c1, u_carbs, u_ind), -1)
-        dC1_Ind = self.net_dc1(inp_C1)
-
         inp_C2 = torch.cat((c1, c2, u_ind), -1)
         dC2_Ind = self.net_dc2(inp_C2)
 
-        dx = torch.cat((dS1_Ind, dS2_Ind, dI_Ind, dX1_Ind, dX2_Ind, dX3_Ind, dQ1_Ind, dQ2_Ind, dC1_Ind, dC2_Ind), -1)
+        inp_C1 = torch.cat((c1, u_carbs, u_ind), -1)
+        dC1_Ind = self.net_dc1(inp_C1)
+
+        dx = torch.cat((dQ1_Ind, dQ2_Ind, dS1_Ind, dS2_Ind, dI_Ind, dX1_Ind, dX2_Ind, dX3_Ind, dC2_Ind, dC1_Ind), -1)
 
         return dx

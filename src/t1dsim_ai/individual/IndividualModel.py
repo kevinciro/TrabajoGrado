@@ -1,7 +1,6 @@
 from t1dsim_ai.individual.Batch import Batch
 from t1dsim_ai.individual.ForwardEulerSimulator import ForwardEulerSimulator
-from t1dsim_ai.individual.Q1_Ind import CGMIndividual
-from t1dsim_ai.individual.Q2_Ind import CGMIndividual_Q2
+from t1dsim_ai.individual.models import CGMIndividual
 from t1dsim_ai.utils.preprocess import scaler as scaler_pop
 from t1dsim_ai.utils.preprocess import (
     scale_single_state,
