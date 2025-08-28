@@ -84,6 +84,16 @@ class ForwardEulerSimulator(nn.Module):
                 dx_ind = self.ss_ind_model(x_step, u_step, u_ind_step)
                 #print(dx_ind)
                 dx[:, 0] += dx_ind[:, 0]
+                dx[:, 1] += dx_ind[:, 1]
+                dx[:, 2] += dx_ind[:, 2]
+                dx[:, 3] += dx_ind[:, 3]
+                dx[:, 4] += dx_ind[:, 4]
+                dx[:, 5] += dx_ind[:, 5]
+                dx[:, 6] += dx_ind[:, 6]
+                dx[:, 7] += dx_ind[:, 7]
+                dx[:, 8] += dx_ind[:, 8]
+                dx[:, 9] += dx_ind[:, 9]
+
                 if (self.showQ1):
                     dq1_ind_list.append(dx_ind.item())
                     suma_dq_list.append(dx[:, 0].item())
